@@ -1,5 +1,5 @@
 languageCode = "en-us"
-title = "Golang Template"
+title = "AWS IAM User"
 theme = "hugo-theme-learn"
 baseURL = "http://localhost:1313"
 

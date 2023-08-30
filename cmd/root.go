@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/conijnio/golang-template/pkg/core"
+	"github.com/conijnio/aws-iam-user/pkg/core"
 	"github.com/spf13/cobra"
 	"os"
 )
@@ -13,10 +13,10 @@ var (
 )
 
 var rootCmd = &cobra.Command{
-	Use:     "golang-template",
-	Short:   "golang-template - Sample cli tool implementation",
+	Use:     "aws-iam-user",
+	Short:   "aws-iam-user - Sample cli tool implementation",
 	PreRun:  preRun,
-	Example: "golang-template",
+	Example: "aws-iam-user",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		return core.MainRoutine()
 	},

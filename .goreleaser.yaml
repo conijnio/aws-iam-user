@@ -1,4 +1,4 @@
-project_name: "golang-template"
+project_name: "aws-iam-user"
 
 # before are hooks that will be run before any builds are done, so good to put install scripts and stuff that your builds need here
 before:
@@ -13,15 +13,15 @@ signs:
 
 builds:
   - main: ./main.go
-    binary: golang-template
+    binary: aws-iam-user
     goos: ["linux", "darwin", "windows"]
     goarch: ["386", "amd64", "arm64"]
     env:
       - CGO_ENABLED=0
 
 nfpms:
-  - package_name: golang-template
-    homepage: https://github.com/conijnio/golang-template/
+  - package_name: aws-iam-user
+    homepage: https://github.com/conijnio/aws-iam-user/
     maintainer: Joris Conijn <joris@conijnonline.nl>
     description: |-
       Template for golang projects
@@ -36,4 +36,3 @@ changelog:
   sort: "asc"
   filters:
     exclude: ["^docs:", "demo", "^hugo:", "Merge pull request", "Merge branch"]
-

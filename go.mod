@@ -1,4 +1,4 @@
-module github.com/conijnio/golang-template
+module github.com/conijnio/aws-iam-user
 
 go 1.20
 

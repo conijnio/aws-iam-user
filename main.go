@@ -1,6 +1,6 @@
 package main
 
-import "github.com/conijnio/golang-template/cmd"
+import "github.com/conijnio/aws-iam-user/cmd"
 
 var (
 	version = "dev"

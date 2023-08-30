@@ -93,8 +93,8 @@ func TestRootCmdVersion(t *testing.T) {
 		t.Errorf("No error was expected but received: %s", err)
 	}
 
-	if output != "golang-template version 0.1.0" {
-		t.Errorf("Expected 'golang-template version 0.1.0' but received %s", output)
+	if output != "aws-iam-user version 0.1.0" {
+		t.Errorf("Expected 'aws-iam-user version 0.1.0' but received %s", output)
 	}
 }
 
