@@ -1,0 +1,10 @@
+languageCode = "en-us"
+title = "Golang Template"
+theme = "hugo-theme-learn"
+baseURL = "http://localhost:1313"
+
+[params]
+disableLandingPageButton = "true"
+
+[outputs]
+home = [ "HTML", "RSS", "JSON"]

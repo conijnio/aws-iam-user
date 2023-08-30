@@ -1,0 +1,27 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.0.1
+    hooks:
+      - id: check-merge-conflict
+      - id: check-json
+      - id: check-yaml
+      - id: detect-aws-credentials
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+  - repo: local
+    hooks:
+      - id: complexity
+        name: Run complexity scanning
+        entry: make complexity
+        pass_filenames: false
+        language: system
+      - id: lint
+        name: Run linters
+        entry: make lint
+        pass_filenames: false
+        language: system
+      - id: tests
+        name: Run unit tests
+        entry: make test
+        pass_filenames: false
+        language: system

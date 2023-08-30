@@ -1,0 +1,35 @@
+name: Continuous Integration
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  Quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: "1.20"
+      - name: Running unit tests
+        run: go test -v ./...
+      - name: Prepare reports directory
+        run: mkdir -p reports
+      - name: Calc coverage
+        run: go test -v ./... -covermode=count -coverprofile=reports/coverage.out
+      - name: Convert coverage to lcov
+        uses: jandelgado/gcov2lcov-action@v1
+        with:
+          infile: reports/coverage.out
+          outfile: reports/coverage.lcov
+      - name: Coveralls
+        uses: coverallsapp/github-action@v1.1.2
+        with:
+          github-token: ${{ secrets.github_token }}
+          path-to-lcov: reports/coverage.lcov
