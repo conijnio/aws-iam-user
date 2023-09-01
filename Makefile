@@ -24,7 +24,7 @@ complexity: gocyclo gocognit ## Check codebase for complexity
 .PHONY: gocyclo
 gocyclo:
 	$(info Calculating gocycle score)
-	gocyclo -over 3 -avg .
+	gocyclo -over 3 -ignore "_test" -avg .
 
 .PHONY: gocognit
 gocognit:
