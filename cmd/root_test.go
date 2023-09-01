@@ -3,6 +3,8 @@ package cmd
 import (
 	"bytes"
 	"errors"
+	"github.com/conijnio/aws-iam-user/pkg/adapters"
+	"github.com/conijnio/aws-iam-user/pkg/models"
 	"github.com/spf13/cobra"
 	"strings"
 	"testing"
@@ -20,8 +22,21 @@ func execute(t *testing.T, c *cobra.Command, args ...string) (string, error) {
 	return strings.TrimSpace(buf.String()), err
 }
 
+type MockClientAdapter struct {
+	LoadUserFailure bool
+}
+
+func (u *MockClientAdapter) LoadUser() (*models.User, error) {
+	if u.LoadUserFailure {
+		return &models.User{}, errors.New("failed")
+	}
+	return &models.User{}, nil
+}
+
 func TestRootCmd(t *testing.T) {
 	var args []string
+
+	adapters.RegisterAdapter("eu-west-1", "default", &MockClientAdapter{})
 
 	_, err := execute(t, rootCmd, args...)
 
@@ -30,14 +45,29 @@ func TestRootCmd(t *testing.T) {
 	}
 }
 
+func TestRootCmdLoadUserFailure(t *testing.T) {
+	var args []string
+
+	adapters.RegisterAdapter("eu-west-1", "default", &MockClientAdapter{
+		LoadUserFailure: true,
+	})
+
+	_, err := execute(t, rootCmd, args...)
+
+	if err == nil {
+		t.Errorf("Error was expected but received: nil")
+	}
+}
+
 func TestExecute(t *testing.T) {
 	var got int
+
 	oldOsExit := osExit
 	defer func() { osExit = oldOsExit }()
+	osExit = func(code int) { got = code }
 
-	osExit = func(code int) {
-		got = code
-	}
+	adapters.RegisterAdapter("eu-west-1", "default", &MockClientAdapter{})
+
 	Execute()
 	if exp := 0; got != exp {
 		t.Errorf("Expected exit code: %d, got: %d", exp, got)
