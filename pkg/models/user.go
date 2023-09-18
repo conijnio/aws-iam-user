@@ -1,5 +1,7 @@
 package models
 
+import "fmt"
+
 type User struct {
 	Account string
 	UserId  string
@@ -14,4 +16,8 @@ func (u *User) IsUser() bool {
 
 func (u *User) IsRole() bool {
 	return u.Type == "assumed-role"
+}
+
+func (u *User) String() string {
+	return fmt.Sprintf("%s in %s", u.Name, u.Account)
 }
