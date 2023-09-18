@@ -22,21 +22,25 @@ func execute(t *testing.T, c *cobra.Command, args ...string) (string, error) {
 	return strings.TrimSpace(buf.String()), err
 }
 
-type MockClientAdapter struct {
+type MockAdapter struct {
 	LoadUserFailure bool
 }
 
-func (u *MockClientAdapter) LoadUser() (*models.User, error) {
+func (u *MockAdapter) LoadUser() (*models.User, error) {
 	if u.LoadUserFailure {
 		return &models.User{}, errors.New("failed")
 	}
 	return &models.User{}, nil
 }
 
+func (u *MockAdapter) RotateCredentials(user *models.User) error {
+	return nil
+}
+
 func TestRootCmd(t *testing.T) {
 	var args []string
 
-	adapters.RegisterAdapter("eu-west-1", "default", &MockClientAdapter{})
+	adapters.RegisterAdapter("eu-west-1", "default", &MockAdapter{})
 
 	_, err := execute(t, rootCmd, args...)
 
@@ -48,7 +52,7 @@ func TestRootCmd(t *testing.T) {
 func TestRootCmdLoadUserFailure(t *testing.T) {
 	var args []string
 
-	adapters.RegisterAdapter("eu-west-1", "default", &MockClientAdapter{
+	adapters.RegisterAdapter("eu-west-1", "default", &MockAdapter{
 		LoadUserFailure: true,
 	})
 
@@ -66,7 +70,7 @@ func TestExecute(t *testing.T) {
 	defer func() { osExit = oldOsExit }()
 	osExit = func(code int) { got = code }
 
-	adapters.RegisterAdapter("eu-west-1", "default", &MockClientAdapter{})
+	adapters.RegisterAdapter("eu-west-1", "default", &MockAdapter{})
 
 	Execute()
 	if exp := 0; got != exp {

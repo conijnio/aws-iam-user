@@ -40,6 +40,14 @@ pre-commit install
 - `make lint`, performs linting actions on the codebase.
 - `make test`, runs all the unit tests.
 
+## Installation
+
+You can install the tool with the following command:
+
+```shell
+go install github.com/conijnio/aws-iam-user@latest
+```
+
 ## License
 
 This project is free and open source software licensed under the [Apache 2.0 License](./LICENSE).

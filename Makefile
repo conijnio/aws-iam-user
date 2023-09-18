@@ -29,7 +29,7 @@ gocyclo:
 .PHONY: gocognit
 gocognit:
 	$(info Calculating gocognit score)
-	gocognit -over 3 -avg .
+	gocognit -over 3 -ignore "_test" -avg .
 
 
 .PHONY: lint

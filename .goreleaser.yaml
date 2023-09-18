@@ -32,6 +32,24 @@ nfpms:
 sboms:
   - artifacts: archive
 
+brews:
+  - repository:
+      owner: conijnio
+      name: homebrew-aws-iam-user
+    name: aws-iam-user
+    homepage: https://github.com/conijnio/aws-iam-user
+    description: Manage your IAM credentials easily.
+    license: Apache License 2.0
+    skip_upload: auto
+    commit_author:
+      name: Joris Conijn
+      email: joris@conijnonline.nl
+    folder: Formula
+    install: |-
+      bin.install "aws-iam-user"
+    test: |
+      system "#{bin}/aws-iam-user -v"
+
 changelog:
   sort: "asc"
   filters:
