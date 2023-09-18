@@ -17,6 +17,10 @@ func (u *MockAdapter) LoadUser() (*models.User, error) {
 	return &models.User{}, nil
 }
 
+func (u *MockAdapter) RotateCredentials(user *models.User) error {
+	return nil
+}
+
 func TestAdapterRegistration(t *testing.T) {
 	adapter := &MockAdapter{}
 	RegisterAdapter("eu-west-1", "default", adapter)

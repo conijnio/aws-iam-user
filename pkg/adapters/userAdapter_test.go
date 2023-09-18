@@ -1,6 +1,8 @@
 package adapters
 
 import (
+	"errors"
+	"github.com/aws/aws-sdk-go-v2/service/iam"
 	"github.com/aws/aws-sdk-go-v2/service/sts"
 	"github.com/awsdocs/aws-doc-sdk-examples/gov2/testtools"
 	"testing"
@@ -38,7 +40,6 @@ func TestUserIAMUserJohnDoe(t *testing.T) {
 		t.Error("Expected IsUser() to return True")
 	}
 
-	// Validate that all stubs are called
 	testtools.ExitTest(stubber, t)
 }
 
@@ -62,7 +63,6 @@ func TestUserIAMRoleDeveloper(t *testing.T) {
 		t.Error("Expected IsUser() to return False")
 	}
 
-	// Validate that all stubs are called
 	testtools.ExitTest(stubber, t)
 }
 
@@ -82,7 +82,6 @@ func TestUserWithInvalidARN(t *testing.T) {
 		t.Error("Expected IsUser() to return False")
 	}
 
-	// Validate that all stubs are called
 	testtools.ExitTest(stubber, t)
 }
 
@@ -97,6 +96,127 @@ func TestUserWithClientFailure(t *testing.T) {
 
 	testtools.VerifyError(err, ClientError, t)
 
-	// Validate that all stubs are called
+	testtools.ExitTest(stubber, t)
+}
+
+type MockConfig struct {
+	failUpdate bool
+}
+
+func (c *MockConfig) AccessKeyId() string {
+	return "MyAccessKey"
+}
+
+func (c *MockConfig) UpdateKeys(accessKey string, secretAccessKey string) error {
+	if c.failUpdate {
+		return errors.New("failed to update the credentials")
+	}
+	return nil
+}
+
+func (c *MockConfig) Rollback(err error) error {
+	return err
+}
+
+func TestRotateCredentials(t *testing.T) {
+	stubber := testtools.NewStubber()
+	stubber.Add(CallerIdentityIAMUserJohnDoe)
+	stubber.Add(SingleAccessKeys)
+	stubber.Add(CreateAccessKey)
+	stubber.Add(CallerIdentityIAMUserJohnDoe)
+	stubber.Add(UpdateAccessKey)
+	stubber.Add(DeleteAccessKey)
+
+	adapter := New("eu-west-1", "default")
+	adapter.stsClient = sts.NewFromConfig(*stubber.SdkConfig)
+	adapter.iamClient = iam.NewFromConfig(*stubber.SdkConfig)
+
+	adapter.config = &MockConfig{}
+
+	user, _ := adapter.LoadUser()
+	if err := adapter.RotateCredentials(user); err != nil {
+		t.Error("expected RotateCredentials() not to return an error")
+	}
+
+	testtools.ExitTest(stubber, t)
+}
+
+func TestRotateCredentialsTwoAccessKeys(t *testing.T) {
+	stubber := testtools.NewStubber()
+	stubber.Add(CallerIdentityIAMUserJohnDoe)
+	stubber.Add(TwoAccessKeys)
+
+	adapter := New("eu-west-1", "default")
+	adapter.stsClient = sts.NewFromConfig(*stubber.SdkConfig)
+	adapter.iamClient = iam.NewFromConfig(*stubber.SdkConfig)
+
+	adapter.config = &MockConfig{}
+
+	user, _ := adapter.LoadUser()
+	if err := adapter.RotateCredentials(user); err == nil {
+		t.Error("expected RotateCredentials() to return an error")
+	}
+
+	testtools.ExitTest(stubber, t)
+}
+
+func TestRotateCredentialsCreateFailure(t *testing.T) {
+	stubber := testtools.NewStubber()
+	stubber.Add(CallerIdentityIAMUserJohnDoe)
+	stubber.Add(SingleAccessKeys)
+	stubber.Add(CreateAccessKeyFailure)
+
+	adapter := New("eu-west-1", "default")
+	adapter.stsClient = sts.NewFromConfig(*stubber.SdkConfig)
+	adapter.iamClient = iam.NewFromConfig(*stubber.SdkConfig)
+
+	adapter.config = &MockConfig{}
+
+	user, _ := adapter.LoadUser()
+	if err := adapter.RotateCredentials(user); err == nil {
+		t.Error("expected RotateCredentials() to return an error")
+	}
+
+	testtools.ExitTest(stubber, t)
+}
+
+func TestRotateCredentialsConfigUpdateFailure(t *testing.T) {
+	stubber := testtools.NewStubber()
+	stubber.Add(CallerIdentityIAMUserJohnDoe)
+	stubber.Add(SingleAccessKeys)
+	stubber.Add(CreateAccessKey)
+	stubber.Add(CallerIdentityClientFailure)
+
+	adapter := New("eu-west-1", "default")
+	adapter.stsClient = sts.NewFromConfig(*stubber.SdkConfig)
+	adapter.iamClient = iam.NewFromConfig(*stubber.SdkConfig)
+
+	adapter.config = &MockConfig{}
+
+	user, _ := adapter.LoadUser()
+	if err := adapter.RotateCredentials(user); err == nil {
+		t.Error("expected RotateCredentials() to return an error")
+	}
+
+	testtools.ExitTest(stubber, t)
+}
+
+func TestRotateCredentialsNewCredentialFailure(t *testing.T) {
+	stubber := testtools.NewStubber()
+	stubber.Add(CallerIdentityIAMUserJohnDoe)
+	stubber.Add(SingleAccessKeys)
+	stubber.Add(CreateAccessKey)
+
+	adapter := New("eu-west-1", "default")
+	adapter.stsClient = sts.NewFromConfig(*stubber.SdkConfig)
+	adapter.iamClient = iam.NewFromConfig(*stubber.SdkConfig)
+
+	adapter.config = &MockConfig{failUpdate: true}
+
+	user, _ := adapter.LoadUser()
+	if err := adapter.RotateCredentials(user); err == nil {
+		t.Error("expected RotateCredentials() to return an error")
+	}
+
 	testtools.ExitTest(stubber, t)
 }

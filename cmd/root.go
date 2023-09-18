@@ -18,9 +18,9 @@ var (
 
 var rootCmd = &cobra.Command{
 	Use:     "aws-iam-user",
-	Short:   "aws-iam-user - Sample cli tool implementation",
+	Short:   "aws-iam-user - Manage your IAM User from the comfort of the CLI",
 	PreRun:  preRun,
-	Example: "aws-iam-user",
+	Example: "aws-iam-user --profile my-profile\naws-iam-user rotate --profile my-profile",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		user, err := adapter.LoadUser()
 
@@ -47,6 +47,7 @@ func init() {
 	rootCmd.PersistentFlags().BoolVarP(&Debug, "debug", "d", false, "verbose logging")
 	rootCmd.PersistentFlags().StringVar(&profile, "profile", "default", "The AWS profile used")
 	rootCmd.PersistentFlags().StringVar(&region, "region", region, "The AWS profile used")
+	rootCmd.AddCommand(rotateCmd)
 }
 
 func Execute() {
@@ -62,5 +63,6 @@ func SetVersion(version string) {
 
 func preRun(cmd *cobra.Command, args []string) {
 	toggleDebug()
+
 	adapter = adapters.LoadUserAdapter(region, profile)
 }

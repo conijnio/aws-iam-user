@@ -1,6 +1,9 @@
 package models
 
-import "testing"
+import (
+	"fmt"
+	"testing"
+)
 
 func TestUser(t *testing.T) {
 	user := &User{Type: "user"}
@@ -23,5 +26,12 @@ func TestRole(t *testing.T) {
 
 	if user.IsUser() {
 		t.Error("Expected IsUser() to return True")
+	}
+}
+
+func TestString(t *testing.T) {
+	user := &User{Account: "111122223333", Name: "john.doe"}
+	if fmt.Sprint(user) != "john.doe in 111122223333" {
+		t.Errorf("Expected 'john.doe in 111122223333' but received '%s'", user)
 	}
 }
