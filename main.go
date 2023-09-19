@@ -1,6 +1,8 @@
 package main
 
-import "github.com/conijnio/aws-iam-user/cmd"
+import (
+	"github.com/conijnio/aws-iam-user/cmd"
+)
 
 var (
 	version = "dev"
