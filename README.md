@@ -14,9 +14,18 @@ This could lead into resources being in a non-compliant state. The `aws-iam-user
 
 More information can be found on the [documentation pages](https://conijnio.github.io/aws-iam-user/).
 
+## Installation
+
+You can install the tool with the following command:
+
+```shell
+brew tap conijnio/aws-iam-user
+brew install aws-iam-user
+```
+
 ## Prerequisites
 
-You will need to install the following tools to successfully run the make targets:
+You will need to install the following tools to successfully run the make targets listed below:
 
 ```shell
 go install github.com/fzipp/gocyclo/cmd/gocyclo@latest
@@ -39,15 +48,6 @@ pre-commit install
 - `make help`, displays all the available options.
 - `make lint`, performs linting actions on the codebase.
 - `make test`, runs all the unit tests.
-
-## Installation
-
-You can install the tool with the following command:
-
-```sh
-brew tap conijnio/aws-iam-user
-git fetch --porune
-```
 
 ## License
 
