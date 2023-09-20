@@ -44,8 +44,9 @@ pre-commit install
 
 You can install the tool with the following command:
 
-```shell
-go install github.com/conijnio/aws-iam-user@latest
+```sh
+brew tap conijnio/aws-iam-user
+git fetch --porune
 ```
 
 ## License
