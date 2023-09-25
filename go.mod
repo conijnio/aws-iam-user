@@ -6,7 +6,7 @@ require (
 	github.com/aws/aws-sdk-go-v2 v1.21.0
 	github.com/aws/aws-sdk-go-v2/config v1.18.39
 	github.com/aws/aws-sdk-go-v2/service/iam v1.22.5
-	github.com/aws/aws-sdk-go-v2/service/sts v1.21.5
+	github.com/aws/aws-sdk-go-v2/service/sts v1.22.0
 	github.com/awsdocs/aws-doc-sdk-examples/gov2/testtools v0.0.0-20230830142806-6a3ab3b2c742
 	github.com/go-ini/ini v1.67.0
 	github.com/sirupsen/logrus v1.9.3
